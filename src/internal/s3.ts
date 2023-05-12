@@ -8,7 +8,6 @@ import { AWSError } from './error'
 import { SignedHTTPRequest } from './http'
 import { InvalidSignatureError, SignatureV4 } from './signature'
 
-
 /** Class allowing to interact with Amazon AWS's S3 service */
 export class S3Client extends AWSClient {
     signature: SignatureV4
@@ -59,6 +58,10 @@ export class S3Client extends AWSClient {
 
         const res = http.request(method, signedRequest.url, signedRequest.body || '', {
             headers: signedRequest.headers,
+
+            // We need to set the `responseType` to text so that jslib-aws overrides
+            // the `discardResponseBodies` k6 option if set.
+            responseType: 'text',
         })
         this._handle_error('ListBuckets', res)
 
