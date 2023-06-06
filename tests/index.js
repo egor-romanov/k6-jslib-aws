@@ -92,8 +92,8 @@ export function setup() {
     }
 }
 
-export default function testSuite(data) {
-    s3TestSuite(data)
+export default async function testSuite(data) {
+    await s3TestSuite(data)
     secretsManagerTestSuite(data)
     kmsTestSuite(data)
     sqsTestSuite(data)

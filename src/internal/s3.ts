@@ -8,7 +8,6 @@ import { AWSError } from './error'
 import { SignedHTTPRequest } from './http'
 import { InvalidSignatureError, SignatureV4 } from './signature'
 
-
 /** Class allowing to interact with Amazon AWS's S3 service */
 export class S3Client extends AWSClient {
     signature: SignatureV4
@@ -43,7 +42,7 @@ export class S3Client extends AWSClient {
      * @throws  {S3ServiceError}
      * @throws  {InvalidSignatureError}
      */
-    listBuckets(): Array<S3Bucket> {
+    async listBuckets(): Promise<Array<S3Bucket>> {
         const method = 'GET'
 
         const signedRequest: SignedHTTPRequest = this.signature.sign(
@@ -57,7 +56,7 @@ export class S3Client extends AWSClient {
             {}
         )
 
-        const res = http.request(method, signedRequest.url, signedRequest.body || '', {
+        const res = await http.asyncRequest(method, signedRequest.url, signedRequest.body || '', {
             headers: signedRequest.headers,
         })
         this._handle_error('ListBuckets', res)
@@ -99,7 +98,7 @@ export class S3Client extends AWSClient {
      * @throws  {S3ServiceError}
      * @throws  {InvalidSignatureError}
      */
-    listObjects(bucketName: string, prefix?: string): Array<S3Object> {
+    async listObjects(bucketName: string, prefix?: string): Promise<Array<S3Object>> {
         // Prepare request
         const method = 'GET'
         const host = `${this.host}`
